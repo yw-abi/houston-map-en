@@ -326,38 +326,161 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; height: 100
 .res-card .res-link:hover { text-decoration: underline; }
 .res-empty-hint { padding: 40px 20px; text-align: center; color: #555; font-size: 13px; }
 
-/* Layer Toggle Panel */
-#layer-toggle {
+/* Layers Panel Button */
+#layers-open-btn {
   position: absolute;
   top: 56px;
   right: 12px;
   z-index: 999;
-  display: flex;
-  flex-direction: column;
-  gap: 5px;
-}
-.layer-btn {
-  padding: 7px 13px;
-  background: rgba(26, 26, 46, 0.85);
-  color: #ccc;
-  border: 1px solid rgba(255,255,255,0.15);
+  padding: 8px 14px;
+  background: rgba(26, 26, 46, 0.88);
+  color: #fff;
+  border: 1px solid rgba(255,255,255,0.2);
   border-radius: 8px;
-  font-size: 12px;
+  font-size: 13px;
   cursor: pointer;
   box-shadow: 0 2px 8px rgba(0,0,0,0.3);
   transition: all 0.2s;
-  text-align: left;
   white-space: nowrap;
 }
-.layer-btn:hover { background: rgba(40,40,70,0.9); color: #fff; }
-.layer-btn.active { background: rgba(26,26,46,0.92); color: #fff; border-color: rgba(255,255,255,0.35); }
-.layer-btn.inactive { opacity: 0.45; }
-.layer-btn .dot {
-  display: inline-block;
-  width: 9px; height: 9px;
+#layers-open-btn:hover { background: rgba(233,69,96,0.85); }
+
+/* Layers Side Panel */
+#layers-panel {
+  position: fixed;
+  top: 0;
+  right: -320px;
+  width: 300px;
+  height: 100vh;
+  background: #1a1a2e;
+  z-index: 1500;
+  overflow-y: auto;
+  transition: right 0.3s cubic-bezier(0.4,0,0.2,1);
+  box-shadow: -4px 0 24px rgba(0,0,0,0.5);
+}
+#layers-panel.open { right: 0; }
+#layers-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.35);
+  z-index: 1400;
+}
+#layers-overlay.active { display: block; }
+.layers-header {
+  padding: 18px 16px 12px;
+  background: linear-gradient(135deg, #16213e, #0f3460);
+  border-bottom: 2px solid #e94560;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.layers-header h2 { font-size: 16px; color: #fff; }
+.layers-close {
+  background: none; border: none; color: #aaa;
+  font-size: 22px; cursor: pointer; padding: 0 4px;
+}
+.layers-close:hover { color: #fff; }
+
+/* Group row */
+.layer-group {
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+.layer-group-header {
+  display: flex;
+  align-items: center;
+  padding: 11px 16px;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.15s;
+}
+.layer-group-header:hover { background: rgba(255,255,255,0.04); }
+.layer-group-header .g-dot {
+  width: 10px; height: 10px;
   border-radius: 50%;
-  margin-right: 6px;
-  vertical-align: middle;
+  margin-right: 9px;
+  flex-shrink: 0;
+}
+.layer-group-header .g-label {
+  flex: 1;
+  font-size: 13px;
+  font-weight: 700;
+  color: #fff;
+}
+.layer-group-header .g-arrow {
+  font-size: 11px;
+  color: #666;
+  margin-right: 10px;
+  transition: transform 0.2s;
+}
+.layer-group-header.expanded .g-arrow { transform: rotate(90deg); }
+.layer-group-header .g-toggle {
+  width: 36px; height: 20px;
+  background: #e94560;
+  border-radius: 10px;
+  position: relative;
+  flex-shrink: 0;
+  transition: background 0.2s;
+  cursor: pointer;
+}
+.layer-group-header .g-toggle::after {
+  content: '';
+  position: absolute;
+  top: 3px; left: 3px;
+  width: 14px; height: 14px;
+  background: #fff;
+  border-radius: 50%;
+  transition: left 0.2s;
+}
+.layer-group-header .g-toggle.off { background: #444; }
+.layer-group-header .g-toggle.off::after { left: 19px; }
+
+/* Item rows */
+.layer-items {
+  display: none;
+  background: rgba(0,0,0,0.2);
+  padding: 4px 0 6px 0;
+}
+.layer-items.open { display: block; }
+.layer-item {
+  display: flex;
+  align-items: center;
+  padding: 7px 16px 7px 36px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.layer-item:hover { background: rgba(255,255,255,0.05); }
+.layer-item .i-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+.layer-item .i-label {
+  flex: 1;
+  font-size: 12px;
+  color: #ccc;
+}
+.layer-item .i-check {
+  width: 16px; height: 16px;
+  border-radius: 4px;
+  border: 1.5px solid #555;
+  background: transparent;
+  position: relative;
+  flex-shrink: 0;
+  transition: all 0.15s;
+}
+.layer-item .i-check.on {
+  background: #e94560;
+  border-color: #e94560;
+}
+.layer-item .i-check.on::after {
+  content: '✓';
+  position: absolute;
+  top: -1px; left: 1px;
+  font-size: 11px;
+  color: #fff;
+  font-weight: 700;
 }
 /* Mobile responsive */
 @media (max-width: 768px) {
@@ -383,13 +506,17 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; height: 100
     <button class="map-btn active" onclick="setLayer('street')">Map</button>
     <button class="map-btn" onclick="setLayer('satellite')">Satellite</button>
   </div>
-  <div id="layer-toggle">
-    <button class="layer-btn active" onclick="toggleLayer('communities')" id="btn-communities"><span class="dot" style="background:#e94560"></span>Communities</button>
-    <button class="layer-btn active" onclick="toggleLayer('employers')" id="btn-employers"><span class="dot" style="background:#e67e22"></span>Employers</button>
-    <button class="layer-btn active" onclick="toggleLayer('future')" id="btn-future"><span class="dot" style="background:#8e44ad"></span>Future Projects</button>
-    <button class="layer-btn active" onclick="toggleLayer('drivelines')" id="btn-drivelines"><span class="dot" style="background:#aaa"></span>Drive Times</button>
-    <button class="layer-btn active" onclick="toggleLayer('rings')" id="btn-rings"><span class="dot" style="background:#0f3460"></span>Distance Rings</button>
+  <button id="layers-open-btn" onclick="openLayersPanel()">🗂 Layers</button>
+</div>
+
+<!-- Layers Panel -->
+<div id="layers-overlay" onclick="closeLayersPanel()"></div>
+<div id="layers-panel">
+  <div class="layers-header">
+    <h2>🗂 Layers</h2>
+    <button class="layers-close" onclick="closeLayersPanel()">&times;</button>
   </div>
+  <div id="layers-content"></div>
 </div>
 
 <!-- Resources Button & Panel -->
@@ -713,86 +840,106 @@ function setLayer(type) {
   currentLayer = type;
 }
 
-// ========== LAYER GROUPS & TOGGLE ==========
-const layerGroups = {
-  rings:       L.layerGroup().addTo(map),
-  drivelines:  L.layerGroup().addTo(map),
-  communities: L.layerGroup().addTo(map),
-  employers:   L.layerGroup().addTo(map),
-  future:      L.layerGroup().addTo(map)
-};
-const layerVisible = { rings: true, drivelines: true, communities: true, employers: true, future: true };
-
-function toggleLayer(name) {
-  layerVisible[name] = !layerVisible[name];
-  const btn = document.getElementById('btn-' + name);
-  if (layerVisible[name]) {
-    layerGroups[name].addTo(map);
-    btn.classList.add('active');
-    btn.classList.remove('inactive');
-  } else {
-    map.removeLayer(layerGroups[name]);
-    btn.classList.remove('active');
-    btn.classList.add('inactive');
-  }
+// ========== LAYER SYSTEM (per-item) ==========
+const itemLayers = {};
+const itemVisible = {};
+function makeKey(group, id) { return group + '__' + id; }
+function registerItem(group, id) {
+  const key = makeKey(group, id);
+  itemLayers[key] = L.layerGroup().addTo(map);
+  itemVisible[key] = true;
+  return itemLayers[key];
+}
+function toggleItem(group, id) {
+  const key = makeKey(group, id);
+  itemVisible[key] = !itemVisible[key];
+  if (itemVisible[key]) itemLayers[key].addTo(map);
+  else map.removeLayer(itemLayers[key]);
+  renderLayersPanel();
+}
+function toggleGroup(group) {
+  const keys = Object.keys(itemVisible).filter(k => k.startsWith(group + '__'));
+  const anyOn = keys.some(k => itemVisible[k]);
+  keys.forEach(k => {
+    itemVisible[k] = !anyOn;
+    if (itemVisible[k]) itemLayers[k].addTo(map);
+    else map.removeLayer(itemLayers[k]);
+  });
+  renderLayersPanel();
+}
+function openLayersPanel() {
+  document.getElementById('layers-panel').classList.add('open');
+  document.getElementById('layers-overlay').classList.add('active');
+}
+function closeLayersPanel() {
+  document.getElementById('layers-panel').classList.remove('open');
+  document.getElementById('layers-overlay').classList.remove('active');
+}
+const panelGroups = [];
+function renderLayersPanel() {
+  const container = document.getElementById('layers-content');
+  if (!container) return;
+  container.innerHTML = panelGroups.map(g => {
+    const keys = g.items.map(i => makeKey(g.id, i.id));
+    const allOn = keys.every(k => itemVisible[k]);
+    const expanded = g._expanded !== false;
+    return `
+      <div class="layer-group">
+        <div class="layer-group-header ${expanded ? 'expanded' : ''}" onclick="toggleGroupExpand('${g.id}')">
+          <span class="g-dot" style="background:${g.color}"></span>
+          <span class="g-label">${g.label}</span>
+          <span class="g-arrow">▶</span>
+          <span class="g-toggle ${allOn ? '' : 'off'}" onclick="event.stopPropagation();toggleGroup('${g.id}')"></span>
+        </div>
+        <div class="layer-items ${expanded ? 'open' : ''}">
+          ${g.items.map(i => {
+            const on = itemVisible[makeKey(g.id, i.id)];
+            return `<div class="layer-item" onclick="toggleItem('${g.id}','${i.id}')">
+              <span class="i-dot" style="background:${i.color||g.color}"></span>
+              <span class="i-label">${i.label}</span>
+              <span class="i-check ${on?'on':''}"></span>
+            </div>`;
+          }).join('')}
+        </div>
+      </div>`;
+  }).join('');
+}
+function toggleGroupExpand(gid) {
+  const g = panelGroups.find(x => x.id === gid);
+  if (g) g._expanded = !g._expanded;
+  renderLayersPanel();
 }
 
 // ========== HOUSTON DISTANCE RINGS ==========
 const ringDistances = [
-  { radius: 16000, label: '~15 min' },
-  { radius: 32000, label: '~30 min' },
-  { radius: 48000, label: '~45 min' }
+  { id: 'r15', radius: 16000, label: '~15 min' },
+  { id: 'r30', radius: 32000, label: '~30 min' },
+  { id: 'r45', radius: 48000, label: '~45 min' }
 ];
-
-L.circle(HOUSTON_CENTER, {
-  radius: 5000,
-  color: '#e94560',
-  fillColor: '#e94560',
-  fillOpacity: 0.08,
-  weight: 2,
-  opacity: 0.5
-}).addTo(layerGroups.rings);
-
+registerItem('rings', 'downtown');
+L.circle(HOUSTON_CENTER, { radius: 5000, color: '#e94560', fillColor: '#e94560', fillOpacity: 0.08, weight: 2, opacity: 0.5 }).addTo(itemLayers[makeKey('rings','downtown')]);
 ringDistances.forEach(ring => {
-  L.circle(HOUSTON_CENTER, {
-    radius: ring.radius,
-    color: 'rgba(15, 52, 96, 0.25)',
-    fillColor: 'transparent',
-    fillOpacity: 0,
-    weight: 1.5,
-    dashArray: '8, 8'
-  }).addTo(layerGroups.rings);
-
+  registerItem('rings', ring.id);
+  const lg = itemLayers[makeKey('rings', ring.id)];
+  L.circle(HOUSTON_CENTER, { radius: ring.radius, color: 'rgba(15,52,96,0.25)', fillColor: 'transparent', fillOpacity: 0, weight: 1.5, dashArray: '8,8' }).addTo(lg);
   const labelLat = HOUSTON_CENTER[0] + (ring.radius / 111320);
-  L.marker([labelLat, HOUSTON_CENTER[1]], {
-    icon: L.divIcon({
-      className: 'ring-label',
-      html: ring.label,
-      iconSize: [60, 16],
-      iconAnchor: [30, 8]
-    }),
-    interactive: false
-  }).addTo(layerGroups.rings);
+  L.marker([labelLat, HOUSTON_CENTER[1]], { icon: L.divIcon({ className: 'ring-label', html: ring.label, iconSize: [60,16], iconAnchor: [30,8] }), interactive: false }).addTo(lg);
+});
+panelGroups.push({ id: 'rings', label: 'Distance Rings', color: '#3d7ab5', _expanded: false,
+  items: [{ id:'downtown', label:'Downtown circle', color:'#e94560' }, { id:'r15', label:'~15 min ring', color:'#3d7ab5' }, { id:'r30', label:'~30 min ring', color:'#3d7ab5' }, { id:'r45', label:'~45 min ring', color:'#3d7ab5' }]
 });
 
 // ========== DRIVING TIME LINES ==========
 communities.forEach(c => {
-  L.polyline(
-    [HOUSTON_CENTER, [c.lat, c.lng]],
-    { color: c.color, weight: 2.5, opacity: 0.6, dashArray: '8, 6' }
-  ).addTo(layerGroups.drivelines);
-
+  registerItem('drivelines', c.id);
+  const lg = itemLayers[makeKey('drivelines', c.id)];
+  L.polyline([HOUSTON_CENTER, [c.lat, c.lng]], { color: c.color, weight: 2.5, opacity: 0.6, dashArray: '8,6' }).addTo(lg);
   const midLat = (HOUSTON_CENTER[0] + c.lat) / 2;
   const midLng = (HOUSTON_CENTER[1] + c.lng) / 2;
-  L.marker([midLat, midLng], {
-    icon: L.divIcon({
-      className: 'drive-label',
-      html: `🚗 ${c.driveTime}`,
-      iconSize: [90, 22],
-      iconAnchor: [45, 11]
-    }),
-    interactive: false
-  }).addTo(layerGroups.drivelines);
+  L.marker([midLat, midLng], { icon: L.divIcon({ className: 'drive-label', html: `🚗 ${c.driveTime}`, iconSize: [90,22], iconAnchor: [45,11] }), interactive: false }).addTo(lg);
+});
+panelGroups.push({ id: 'drivelines', label: 'Drive Times', color: '#888', _expanded: false,
+  items: communities.map(c => ({ id: c.id, label: c.name, color: c.color }))
 });
 
 // ========== COMMUNITY MARKERS ==========
@@ -815,8 +962,10 @@ function createCommunityIcon(color) {
 
 const communityMarkers = {};
 communities.forEach(c => {
+  registerItem('communities', c.id);
+  const lg = itemLayers[makeKey('communities', c.id)];
   const marker = L.marker([c.lat, c.lng], { icon: createCommunityIcon(c.color) })
-    .addTo(layerGroups.communities)
+    .addTo(lg)
     .bindPopup(`
       <div class="popup-header">
         <h3>${c.name}</h3>
@@ -834,27 +983,12 @@ communities.forEach(c => {
         </div>
       </div>
     `, { maxWidth: 340 });
-
   communityMarkers[c.id] = marker;
-
-  L.marker([c.lat + 0.018, c.lng], {
-    icon: L.divIcon({
-      className: 'community-label',
-      html: c.name,
-      iconSize: [200, 30],
-      iconAnchor: [100, 15]
-    }),
-    interactive: false
-  }).addTo(layerGroups.communities);
-
-  L.circle([c.lat, c.lng], {
-    radius: 3000,
-    color: c.color,
-    fillColor: c.color,
-    fillOpacity: 0.08,
-    weight: 1.5,
-    opacity: 0.4
-  }).addTo(layerGroups.communities);
+  L.marker([c.lat + 0.018, c.lng], { icon: L.divIcon({ className: 'community-label', html: c.name, iconSize: [200,30], iconAnchor: [100,15] }), interactive: false }).addTo(lg);
+  L.circle([c.lat, c.lng], { radius: 3000, color: c.color, fillColor: c.color, fillOpacity: 0.08, weight: 1.5, opacity: 0.4 }).addTo(lg);
+});
+panelGroups.push({ id: 'communities', label: 'Communities', color: '#e94560', _expanded: true,
+  items: communities.map(c => ({ id: c.id, label: c.name, color: c.color }))
 });
 
 // ========== AERIAL PHOTO MODAL ==========
@@ -917,32 +1051,24 @@ function createEmployerIcon(icon) {
   });
 }
 
-employers.forEach(emp => {
+employers.forEach((emp, i) => {
+  const eid = 'emp' + i;
+  registerItem('employers', eid);
+  const lg = itemLayers[makeKey('employers', eid)];
   L.marker([emp.lat, emp.lng], { icon: createEmployerIcon(emp.icon) })
-    .addTo(layerGroups.employers)
+    .addTo(lg)
     .bindPopup(`
       <div class="popup-header" style="background:linear-gradient(135deg, #e67e22, #d35400);">
         <h3>${emp.icon} ${emp.name}</h3>
         <div class="sub">${emp.type}</div>
       </div>
-      <div class="popup-body">
-        <p>${emp.desc}</p>
-      </div>
+      <div class="popup-body"><p>${emp.desc}</p></div>
     `, { maxWidth: 300 });
-
-  const labelHtml = emp.employees
-    ? `${emp.name}<br><span style="font-size:10px;font-weight:400;opacity:0.85">(${emp.employees} employees)</span>`
-    : emp.name;
-
-  L.marker([emp.lat + 0.02, emp.lng], {
-    icon: L.divIcon({
-      className: 'employer-label',
-      html: labelHtml,
-      iconSize: [160, 44],
-      iconAnchor: [80, 22]
-    }),
-    interactive: false
-  }).addTo(layerGroups.employers);
+  const labelHtml = emp.employees ? `${emp.name}<br><span style="font-size:10px;font-weight:400;opacity:0.85">(${emp.employees} employees)</span>` : emp.name;
+  L.marker([emp.lat + 0.02, emp.lng], { icon: L.divIcon({ className: 'employer-label', html: labelHtml, iconSize: [160,44], iconAnchor: [80,22] }), interactive: false }).addTo(lg);
+});
+panelGroups.push({ id: 'employers', label: 'Employers', color: '#e67e22', _expanded: false,
+  items: employers.map((e, i) => ({ id: 'emp'+i, label: e.icon + ' ' + e.name, color: '#e67e22' }))
 });
 
 // ========== LANDMARK MARKERS ==========
@@ -992,9 +1118,12 @@ function createFutureIcon(icon) {
   });
 }
 
-futureDevelopments.forEach(fd => {
+futureDevelopments.forEach((fd, i) => {
+  const fid = 'future' + i;
+  registerItem('future', fid);
+  const lg = itemLayers[makeKey('future', fid)];
   L.marker([fd.lat, fd.lng], { icon: createFutureIcon(fd.icon) })
-    .addTo(layerGroups.future)
+    .addTo(lg)
     .bindPopup(`
       <div class="popup-header" style="background:linear-gradient(135deg, #8e44ad, #6c3483);">
         <h3>${fd.icon} ${fd.name}</h3>
@@ -1005,18 +1134,14 @@ futureDevelopments.forEach(fd => {
         <div class="info-row"><span class="label">Highlights</span><span class="value">${fd.highlights.join(' · ')}</span></div>
       </div>
     `, { maxWidth: 340 });
-
-  L.marker([fd.lat + 0.02, fd.lng], {
-    icon: L.divIcon({
-      className: 'employer-label',
-      html: fd.name,
-      iconSize: [160, 30],
-      iconAnchor: [80, 15],
-      style: 'background: rgba(142, 68, 173, 0.95);'
-    }),
-    interactive: false
-  }).addTo(layerGroups.future);
+  L.marker([fd.lat + 0.02, fd.lng], { icon: L.divIcon({ className: 'employer-label', html: fd.name, iconSize: [160,30], iconAnchor: [80,15] }), interactive: false }).addTo(lg);
 });
+panelGroups.push({ id: 'future', label: 'Future Projects', color: '#8e44ad', _expanded: false,
+  items: futureDevelopments.map((fd, i) => ({ id: 'future'+i, label: fd.icon + ' ' + fd.name, color: '#8e44ad' }))
+});
+
+// Initial render of layers panel
+renderLayersPanel();
 
 // ========== RESOURCES PANEL ==========
 const resources = [
