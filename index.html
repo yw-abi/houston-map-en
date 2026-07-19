@@ -151,6 +151,18 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; height: 100
   font-weight: 600;
   white-space: nowrap;
 }
+.acres-home-label {
+  background: rgba(26, 26, 46, 0.92);
+  border: 2px solid #e94560;
+  border-radius: 8px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.4px;
+  padding: 5px 10px;
+  white-space: nowrap;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.35);
+}
 .map-controls {
   position: absolute;
   top: 12px;
@@ -344,6 +356,7 @@ body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; height: 100
 </div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/esri-leaflet@3.0.15/dist/esri-leaflet.js"></script>
 <script>
 const HOUSTON_CENTER = [29.7604, -95.3698];
 
@@ -464,6 +477,44 @@ const streetLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/v
 const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { attribution: '&copy; Esri', maxZoom: 19 });
 const labelsLayer = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png', { maxZoom: 19 });
 streetLayer.addTo(map);
+
+// Draw the official City of Houston Acres Home Super Neighborhood boundary.
+const acresHomeBoundary = L.esri.featureLayer({
+  url: 'https://mycity2.houstontx.gov/pubgis02/rest/services/HoustonMap/Administrative_Boundary/MapServer/3',
+  where: "SNBNAME = 'ACRES HOME'",
+  style: function () {
+    return {
+      color: '#e94560',
+      weight: 5,
+      opacity: 1,
+      dashArray: '12,8',
+      fillColor: '#e94560',
+      fillOpacity: 0.06
+    };
+  }
+}).addTo(map);
+
+acresHomeBoundary.bindPopup(`
+  <div class="popup-header">
+    <h3>Acres Homes</h3>
+    <div class="sub">Houston, Texas</div>
+  </div>
+  <div class="popup-body">
+    <p>The outlined area shows the City of Houston Acres Home Super Neighborhood boundary.</p>
+  </div>
+`);
+
+// Keep a visible neighborhood name inside the outlined area.
+L.marker([29.873, -95.445], {
+  icon: L.divIcon({
+    className: 'acres-home-label',
+    html: 'ACRES HOMES',
+    iconSize: [132, 32],
+    iconAnchor: [66, 16]
+  }),
+  interactive: false,
+  zIndexOffset: 500
+}).addTo(map);
 
 function setLayer(type) {
   document.querySelectorAll('.map-btn').forEach(b => b.classList.remove('active'));
